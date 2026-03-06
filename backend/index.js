@@ -11,12 +11,15 @@ const PORT = process.env.PORT || 3001;
 const MAX_FILE_BYTES = 95 * 1024 * 1024;
 const REPO_SAFE_LIMIT_BYTES = 750 * 1024 * 1024;
 const GH_API = "https://api.github.com";
-const ALLOWED_ORIGIN = process.env.FRONTEND_URLS || "http://localhost:3000";
+const ALLOWED_ORIGINS = (process.env.FRONTEND_URLS || "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim());
 
 app.use(cors({
   origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman)
     if (!origin) return callback(null, true);
-    if (origin === ALLOWED_ORIGIN) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
     callback(new Error(`CORS: origin "${origin}" is not allowed`));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
