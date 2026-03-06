@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 const MAX_FILE_BYTES = 95 * 1024 * 1024;
 const REPO_SAFE_LIMIT_BYTES = 750 * 1024 * 1024;
 const GH_API = "https://api.github.com";
-const ALLOWED_ORIGIN = process.env.FRONTEND_URL || "http://localhost:3000";
+const ALLOWED_ORIGIN = process.env.FRONTEND_URLS || "http://localhost:3000";
 
 app.use(cors({
   origin: (origin, callback) => {
