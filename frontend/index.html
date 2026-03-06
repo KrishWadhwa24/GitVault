@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitVault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --w: #fff;
+            --off: #f5f5f7;
+            --g50: #f5f5f7;
+            --g100: #ebebed;
+            --g200: #d8d8db;
+            --g300: #aeaeb4;
+            --g500: #6c6c72;
+            --g700: #3a3a3c;
+            --k: #1c1c1e;
+            --blue: #0066cc;
+            --bl: #e8f0fb;
+            --red: #d70015;
+            --rl: #fff2f2;
+            --green: #1a8a3c;
+            --gl: #f0faf3;
+            --amber: #b25000;
+            --al: #fff8ee;
+            --r: 14px;
+            --rsm: 8px;
+            --pill: 100px;
+            --s1: 0 1px 3px rgba(0, 0, 0, .07), 0 1px 2px rgba(0, 0, 0, .04);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+            --s3: 0 20px 60px rgba(0, 0, 0, .13), 0 4px 16px rgba(0, 0, 0, .07);
+            --font: 'DM Sans', -apple-system, sans-serif;
+            --mono: 'DM Mono', monospace;
+            --ease: .18s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--g50);
+            color: var(--k);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh
+        }
+
+        button {
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            background: none
+        }
+
+        input,
+        textarea {
+            font-family: var(--font)
+        }
+
+        a {
+            color: var(--blue);
+            text-decoration: none
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        /* ── NAVBAR ── */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 300;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            background: rgba(255, 255, 255, .86);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--g100)
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -.4px
+        }
+
+        .nav-icon {
+            width: 26px;
+            height: 26px;
+            background: var(--k);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .nav-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--g200)
+        }
+
+        .nav-user {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--g700)
+        }
+
+        .nav-repo-tag {
+            font-size: 11.5px;
+            font-family: var(--mono);
+            background: var(--g50);
+            border: 1px solid var(--g200);
+            padding: 3px 11px;
+            border-radius: var(--pill);
+            color: var(--g500)
+        }
+
+        .nav-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--g50);
+            border: 1px solid var(--g200);
+            color: var(--g500);
+            font-size: 14px;
+            transition: all var(--ease)
+        }
+
+        .nav-btn:hover {
+            background: var(--rl);
+            border-color: #ffc8c8;
+            color: var(--red)
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: var(--pill);
+            font-size: 13.5px;
+            font-weight: 500;
+            font-family: var(--font);
+            transition: all var(--ease);
+            white-space: nowrap;
+            line-height: 1
+        }
+
+        .btn-primary {
+            background: var(--k);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            background: var(--g700);
+            box-shadow: var(--s1);
+            transform: translateY(-1px)
+        }
+
+        .btn-primary:active {
+            transform: translateY(0)
+        }
+
+        .btn-primary:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none
+        }
+
+        .btn-outline {
+            background: var(--w);
+            color: var(--k);
+            border: 1px solid var(--g200)
+        }
+
+        .btn-outline:hover {
+            background: var(--g50);
+            border-color: var(--g300)
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--g500);
+            padding: 6px 12px
+        }
+
+        .btn-ghost:hover {
+            background: var(--g50);
+            color: var(--k)
+        }
+
+        .btn-blue {
+            background: var(--bl);
+            color: var(--blue);
+            padding: 6px 12px;
+            font-size: 13px
+        }
+
+        .btn-blue:hover {
+            background: #dce8f8
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--red);
+            padding: 6px 12px;
+            font-size: 13px
+        }
+
+        .btn-danger:hover {
+            background: var(--rl)
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 13px
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center
+        }
+
+        .spinner {
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            flex-shrink: 0
+        }
+
+        .spinner-dark {
+            border-color: var(--g200);
+            border-top-color: var(--blue)
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ── FORM ── */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 14px
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--g700);
+            letter-spacing: .02em
+        }
+
+        .input {
+            padding: 10px 13px;
+            border: 1px solid var(--g200);
+            border-radius: var(--rsm);
+            font-size: 14px;
+            color: var(--k);
+            background: var(--w);
+            outline: none;
+            transition: all var(--ease)
+        }
+
+        .input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, .1)
+        }
+
+        .input::placeholder {
+            color: var(--g300)
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--g300);
+            line-height: 1.5
+        }
+
+        .hint-path {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--blue);
+            background: var(--bl);
+            padding: 4px 9px;
+            border-radius: var(--rsm);
+            margin-top: 3px
+        }
+
+        /* ═══════════════════════════════════
+   CONNECT FLOW  (3 steps)
+═══════════════════════════════════ */
+        .connect-wrap {
+            min-height: calc(100vh - 52px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px
+        }
+
+        /* Step 1 — token entry */
+        .token-card {
+            background: var(--w);
+            border: 1px solid var(--g100);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--s2)
+        }
+
+        .token-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--k);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 22px
+        }
+
+        .token-title {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -.5px;
+            margin-bottom: 8px
+        }
+
+        .token-sub {
+            font-size: 14px;
+            color: var(--g500);
+            line-height: 1.6;
+            margin-bottom: 26px
+        }
+
+        .token-error {
+            background: var(--rl);
+            border: 1px solid #ffd0d0;
+            border-radius: var(--rsm);
+            padding: 10px 13px;
+            font-size: 13px;
+            color: var(--red);
+            margin-bottom: 14px
+        }
+
+        .token-note {
+            font-size: 12px;
+            color: var(--g300);
+            margin-top: 14px;
+            line-height: 1.6
+        }
+
+        /* Step 2 — repo picker */
+        .repo-page {
+            width: 100%;
+            max-width: 700px
+        }
+
+        .repo-page-head {
+            margin-bottom: 28px
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--g200)
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 600
+        }
+
+        .user-handle {
+            font-size: 13px;
+            color: var(--g500);
+            margin-top: 1px
+        }
+
+        .repo-page-title {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -.4px;
+            margin-bottom: 6px
+        }
+
+        .repo-page-sub {
+            font-size: 14px;
+            color: var(--g500)
+        }
+
+        /* New repo toggle */
+        .new-repo-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 16px;
+            background: var(--bl);
+            border: 1.5px dashed #9ec4ef;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: all var(--ease);
+            margin-bottom: 12px
+        }
+
+        .new-repo-toggle:hover {
+            background: #dce8f8;
+            border-color: var(--blue)
+        }
+
+        .new-repo-toggle-icon {
+            font-size: 18px
+        }
+
+        .new-repo-toggle-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--blue)
+        }
+
+        .new-repo-form {
+            background: var(--w);
+            border: 1px solid var(--g100);
+            border-radius: var(--r);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--s1)
+        }
+
+        .new-repo-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px
+        }
+
+        .visibility-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 6px
+        }
+
+        .vis-opt {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid var(--g200);
+            border-radius: var(--rsm);
+            cursor: pointer;
+            transition: all var(--ease);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 500
+        }
+
+        .vis-opt:hover {
+            border-color: var(--g300)
+        }
+
+        .vis-opt.selected {
+            border-color: var(--blue);
+            background: var(--bl);
+            color: var(--blue)
+        }
+
+        .vis-opt-icon {
+            font-size: 16px
+        }
+
+        /* Repo list */
+        .repo-search-wrap {
+            position: relative;
+            margin-bottom: 12px
+        }
+
+        .repo-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--g300)
+        }
+
+        .repo-search {
+            width: 100%;
+            padding: 9px 12px 9px 36px;
+            border: 1px solid var(--g200);
+            border-radius: var(--rsm);
+            font-size: 14px;
+            color: var(--k);
+            background: var(--w);
+            outline: none;
+            transition: all var(--ease)
+        }
+
+        .repo-search:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, .1)
+        }
+
+        .repo-list {
+            background: var(--w);
+            border: 1px solid var(--g100);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: var(--s1)
+        }
+
+        .repo-list-header {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--g100);
+            background: var(--g50);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .repo-list-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--g300)
+        }
+
+        .repo-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--g100);
+            cursor: pointer;
+            transition: background var(--ease);
+            gap: 14px
+        }
+
+        .repo-item:last-child {
+            border-bottom: none
+        }
+
+        .repo-item:hover {
+            background: var(--g50)
+        }
+
+        .repo-item:hover .repo-item-arrow {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .repo-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: var(--g50);
+            border: 1px solid var(--g100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0
+        }
+
+        .repo-item-body {
+            flex: 1;
+            min-width: 0
+        }
+
+        .repo-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .repo-item-desc {
+            font-size: 12px;
+            color: var(--g500);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .repo-item-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px
+        }
+
+        .repo-priv-badge {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            padding: 1px 7px;
+            border-radius: 4px
+        }
+
+        .priv {
+            background: #f0f0f2;
+            color: var(--g500)
+        }
+
+        .pub {
+            background: var(--gl);
+            color: var(--green)
+        }
+
+        .repo-disk {
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--g300)
+        }
+
+        .repo-disk-bar {
+            width: 60px;
+            height: 3px;
+            background: var(--g100);
+            border-radius: 2px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 4px
+        }
+
+        .repo-disk-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--blue)
+        }
+
+        .repo-disk-fill.warn {
+            background: var(--amber)
+        }
+
+        .repo-disk-fill.danger {
+            background: var(--red)
+        }
+
+        .repo-item-arrow {
+            font-size: 14px;
+            color: var(--g300);
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: all var(--ease);
+            flex-shrink: 0
+        }
+
+        .repo-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--g300);
+            font-size: 14px
+        }
+
+        .repo-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 40px;
+            color: var(--g500);
+            font-size: 14px
+        }
+
+        /* ═══════════════════════════════════
+   MAIN APP
+═══════════════════════════════════ */
+        .app-layout {
+            display: flex;
+            min-height: calc(100vh - 52px)
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 232px;
+            flex-shrink: 0;
+            background: var(--w);
+            border-right: 1px solid var(--g100);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 52px;
+            height: calc(100vh - 52px);
+            overflow-y: auto
+        }
+
+        .sb-section {
+            padding: 18px 14px 0
+        }
+
+        .sb-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--g300);
+            padding: 0 8px;
+            margin-bottom: 4px
+        }
+
+        .sb-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: var(--rsm);
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--g700);
+            cursor: pointer;
+            transition: all var(--ease);
+            margin-bottom: 1px
+        }
+
+        .sb-item:hover {
+            background: var(--g50)
+        }
+
+        .sb-item.active {
+            background: var(--bl);
+            color: var(--blue)
+        }
+
+        .sb-icon {
+            font-size: 15px;
+            width: 19px;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .sb-count {
+            margin-left: auto;
+            font-size: 10.5px;
+            font-weight: 600;
+            background: var(--g100);
+            color: var(--g500);
+            padding: 1px 7px;
+            border-radius: 20px
+        }
+
+        .sb-div {
+            height: 1px;
+            background: var(--g100);
+            margin: 12px 14px
+        }
+
+        .sb-spacer {
+            flex: 1
+        }
+
+        .storage-card {
+            margin: 0 14px 18px;
+            background: var(--g50);
+            border: 1px solid var(--g100);
+            border-radius: var(--r);
+            padding: 13px
+        }
+
+        .storage-card-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--g500);
+            margin-bottom: 8px
+        }
+
+        .storage-bar {
+            height: 4px;
+            background: var(--g200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 7px
+        }
+
+        .storage-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width .5s ease
+        }
+
+        .storage-fill.ok {
+            background: var(--blue)
+        }
+
+        .storage-fill.warn {
+            background: var(--amber)
+        }
+
+        .storage-fill.danger {
+            background: var(--red)
+        }
+
+        .storage-nums {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--g500);
+            font-family: var(--mono)
+        }
+
+        .storage-nums span {
+            white-space: nowrap
+        }
+
+        .switch-repo-btn {
+            margin: 0 14px 14px;
+            width: calc(100% - 28px)
+        }
+
+        /* ── Main Content ── */
+        .main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column
+        }
+
+        .main-inner {
+            flex: 1;
+            padding: 28px 32px
+        }
+
+        /* Breadcrumb */
+        .bc {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 22px;
+            flex-wrap: wrap
+        }
+
+        .bc-item {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--blue);
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background var(--ease)
+        }
+
+        .bc-item:hover {
+            background: var(--bl)
+        }
+
+        .bc-sep {
+            font-size: 12px;
+            color: var(--g300)
+        }
+
+        .bc-cur {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--g500)
+        }
+
+        /* Drop zone */
+        .drop {
+            border: 1.5px dashed var(--g200);
+            border-radius: var(--r);
+            padding: 26px;
+            text-align: center;
+            background: var(--w);
+            margin-bottom: 18px;
+            cursor: pointer;
+            transition: all var(--ease);
+            position: relative;
+            overflow: hidden
+        }
+
+        .drop::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(0, 102, 204, .05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--ease)
+        }
+
+        .drop:hover::after,
+        .drop.drag::after {
+            opacity: 1
+        }
+
+        .drop:hover,
+        .drop.drag {
+            border-color: var(--blue);
+            border-style: solid
+        }
+
+        .drop.drag {
+            background: #f4f8ff
+        }
+
+        .drop-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--g50);
+            border: 1px solid var(--g100);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 18px;
+            transition: all var(--ease);
+            position: relative;
+            z-index: 1
+        }
+
+        .drop:hover .drop-icon,
+        .drop.drag .drop-icon {
+            background: var(--bl);
+            border-color: #b8d0f0
+        }
+
+        .drop-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            position: relative;
+            z-index: 1
+        }
+
+        .drop-sub {
+            font-size: 13px;
+            color: var(--g500);
+            position: relative;
+            z-index: 1
+        }
+
+        .drop-sub em {
+            color: var(--blue);
+            font-style: normal;
+            font-weight: 500
+        }
+
+        .drop-input {
+            display: none
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 18px
+        }
+
+        .toolbar-left {
+            flex: 1
+        }
+
+        .search-wrap {
+            position: relative
+        }
+
+        .search-ic {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--g300)
+        }
+
+        .search-inp {
+            width: 240px;
+            padding: 8px 12px 8px 34px;
+            border: 1px solid var(--g200);
+            border-radius: var(--pill);
+            font-size: 13.5px;
+            color: var(--k);
+            background: var(--w);
+            outline: none;
+            transition: all var(--ease)
+        }
+
+        .search-inp::placeholder {
+            color: var(--g300)
+        }
+
+        .search-inp:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, .1);
+            width: 300px
+        }
+
+        /* File table */
+        .ftable {
+            background: var(--w);
+            border: 1px solid var(--g100);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: var(--s1)
+        }
+
+        .fth {
+            display: grid;
+            grid-template-columns: 38px 1fr 92px 110px 120px;
+            padding: 9px 16px;
+            border-bottom: 1px solid var(--g100);
+            background: var(--g50)
+        }
+
+        .th {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--g300)
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 38px 1fr 92px 110px 120px;
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--g100);
+            align-items: center;
+            transition: background var(--ease);
+            cursor: pointer
+        }
+
+        .frow:last-child {
+            border-bottom: none
+        }
+
+        .frow:hover {
+            background: var(--g50)
+        }
+
+        .frow:hover .faction {
+            opacity: 1
+        }
+
+        .row-ic {
+            font-size: 21px;
+            line-height: 1
+        }
+
+        .row-name {
+            min-width: 0
+        }
+
+        .row-nm {
+            font-size: 13.5px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .row-nm.dir {
+            color: var(--blue)
+        }
+
+        .row-pt {
+            font-size: 11px;
+            color: var(--g300);
+            font-family: var(--mono);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px
+        }
+
+        .row-badge {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--g50);
+            color: var(--g500);
+            border: 1px solid var(--g100);
+            width: fit-content
+        }
+
+        .row-size {
+            font-size: 12.5px;
+            color: var(--g500);
+            font-family: var(--mono)
+        }
+
+        .faction {
+            display: flex;
+            gap: 2px;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity var(--ease)
+        }
+
+        .state-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 52px;
+            color: var(--g500);
+            font-size: 14px
+        }
+
+        .empty-st {
+            text-align: center;
+            padding: 64px 20px
+        }
+
+        .empty-ic {
+            font-size: 42px;
+            margin-bottom: 12px;
+            opacity: .22
+        }
+
+        .empty-tt {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--g500);
+            margin-bottom: 5px
+        }
+
+        .empty-ds {
+            font-size: 13px;
+            color: var(--g300)
+        }
+
+        /* ── MODALS ── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .32);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            padding: 20px;
+            animation: fadeIn .15s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .modal {
+            background: var(--w);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: var(--s3);
+            animation: up .2s cubic-bezier(.4, 0, .2, 1);
+            overflow: hidden
+        }
+
+        .modal-lg {
+            max-width: 680px
+        }
+
+        @keyframes up {
+            from {
+                transform: translateY(18px) scale(.97);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1
+            }
+        }
+
+        .mhead {
+            padding: 22px 22px 0
+        }
+
+        .mtitle {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -.3px;
+            margin-bottom: 4px
+        }
+
+        .msub {
+            font-size: 13.5px;
+            color: var(--g500);
+            line-height: 1.5
+        }
+
+        .mbody {
+            padding: 18px 22px
+        }
+
+        .mfoot {
+            padding: 0 22px 22px;
+            display: flex;
+            gap: 9px;
+            justify-content: flex-end
+        }
+
+        .fpreview-card {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            background: var(--g50);
+            border: 1px solid var(--g100);
+            border-radius: var(--rsm);
+            padding: 11px 13px;
+            margin-bottom: 14px
+        }
+
+        .fpreview-ic {
+            font-size: 26px;
+            flex-shrink: 0
+        }
+
+        .fpreview-nm {
+            font-size: 13.5px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 260px
+        }
+
+        .fpreview-sz {
+            font-size: 12px;
+            color: var(--g500);
+            font-family: var(--mono);
+            margin-top: 1px
+        }
+
+        .size-ok {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--gl);
+            border: 1px solid #c0e8cc;
+            border-radius: var(--rsm);
+            padding: 9px 12px;
+            font-size: 13px;
+            color: var(--green);
+            margin-top: 10px
+        }
+
+        .size-bad {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--rl);
+            border: 1px solid #ffd0d0;
+            border-radius: var(--rsm);
+            padding: 9px 12px;
+            font-size: 13px;
+            color: var(--red);
+            margin-top: 10px
+        }
+
+        .progress-wrap {
+            margin-top: 13px
+        }
+
+        .prog-bar {
+            height: 4px;
+            background: var(--g100);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .prog-fill {
+            height: 100%;
+            background: var(--blue);
+            border-radius: 2px;
+            width: 80%;
+            animation: pulse 1.5s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .6
+            }
+        }
+
+        .del-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--rl);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 12px
+        }
+
+        /* Preview */
+        .prev-bar {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--g100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .prev-fn {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .prev-fm {
+            font-size: 12px;
+            color: var(--g500);
+            font-family: var(--mono);
+            margin-top: 2px
+        }
+
+        .prev-acts {
+            display: flex;
+            gap: 7px
+        }
+
+        .prev-body {
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 380px;
+            max-height: 72vh;
+            overflow: auto
+        }
+
+        .prev-img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            padding: 18px;
+            display: block
+        }
+
+        .prev-iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            display: block
+        }
+
+        .prev-none {
+            text-align: center;
+            color: var(--g300);
+            padding: 50px
+        }
+
+        .prev-none-ic {
+            font-size: 38px;
+            margin-bottom: 10px
+        }
+
+        /* Toasts */
+        .toasts {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            pointer-events: none
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--k);
+            color: #fff;
+            padding: 10px 17px;
+            border-radius: var(--pill);
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+            animation: toastIn .22s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            pointer-events: auto
+        }
+
+        .tdot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .toast.success .tdot {
+            background: #34c759
+        }
+
+        .toast.error .tdot {
+            background: #ff3b30
+        }
+
+        .toast.info .tdot {
+            background: #007aff
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateY(10px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        /* Responsive */
+        @media(max-width:900px) {
+            .sidebar {
+                display: none
+            }
+
+            .fth {
+                grid-template-columns: 34px 1fr 80px 100px
+            }
+
+            .frow {
+                grid-template-columns: 34px 1fr 80px 100px
+            }
+
+            .frow>.row-size {
+                display: none
+            }
+
+            .fth>.th:nth-child(4) {
+                display: none
+            }
+
+            .main-inner {
+                padding: 18px
+            }
+
+            .nav {
+                padding: 0 16px
+            }
+        }
+
+        @media(max-width:580px) {
+            .fth {
+                grid-template-columns: 34px 1fr 90px
+            }
+
+            .frow {
+                grid-template-columns: 34px 1fr 90px
+            }
+
+            .frow>*:nth-child(3) {
+                display: none
+            }
+
+            .fth>.th:nth-child(3) {
+                display: none
+            }
+
+            .search-inp {
+                width: 150px
+            }
+
+            .search-inp:focus {
+                width: 190px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app"></div>
+    <div class="toasts" id="toasts"></div>
+
+    <script>
+        // ════════════════════════════════════════════════
+        // CONFIG
+        // ════════════════════════════════════════════════
+        const API = 'http://localhost:3001/api';
+        const MAX_MB = 95;
+        const MAX_BYTES = MAX_MB * 1024 * 1024;
+
+        // ════════════════════════════════════════════════
+        // STATE
+        // ════════════════════════════════════════════════
+        const S = {
+            // auth
+            token: null,
+            user: null,          // { login, name, avatar }
+            // repo selection
+            screen: 'token',    // 'token' | 'repos' | 'app'
+            repos: null,
+            reposLoading: false,
+            repoSearch: '',
+            showNewRepo: false,
+            newRepo: { name: '', desc: '', priv: true },
+            creatingRepo: false,
+            // active repo
+            creds: null,         // { token, owner, repo }
+            stats: null,
+            // file manager
+            path: 'files',
+            items: [],
+            loading: false,
+            search: '',
+            // modals
+            modal: null,
+            uploadFile: null, uploadSub: '', uploading: false,
+            folderName: '',
+            deleteTarget: null,
+            deletingType: null,   // 'file' | 'folder' | 'repo'
+            deleting: false,
+            previewTarget: null,
+            // connect form
+            tokenInput: '',
+            tokenLoading: false,
+            tokenError: '',
+        };
+
+        function set(patch) { Object.assign(S, patch); render(); }
+
+        // ════════════════════════════════════════════════
+        // PERSISTENCE
+        // ════════════════════════════════════════════════
+        function loadSaved() {
+            try {
+                const d = JSON.parse(localStorage.getItem('fv2') || 'null');
+                if (d?.token && d?.creds) {
+                    S.token = d.token;
+                    S.user = d.user;
+                    S.creds = d.creds;
+                    S.screen = 'app';
+                } else if (d?.token) {
+                    S.token = d.token;
+                    S.user = d.user;
+                    S.screen = 'repos';
+                }
+            } catch { }
+        }
+        function persist() {
+            const d = { token: S.token, user: S.user, creds: S.creds };
+            localStorage.setItem('fv2', JSON.stringify(d));
+        }
+        function wipe() { localStorage.removeItem('fv2'); }
+
+        // ════════════════════════════════════════════════
+        // API
+        // ════════════════════════════════════════════════
+        async function apiFetch(url, opts = {}) {
+            const res = await fetch(url, opts);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+            return data;
+        }
+
+        async function apiVerifyToken(token) {
+            return apiFetch(`${API}/user?token=${enc(token)}`);
+        }
+        async function apiListRepos(token) {
+            return apiFetch(`${API}/repos?token=${enc(token)}`);
+        }
+        async function apiCreateRepo(token, name, desc, isPrivate) {
+            return apiFetch(`${API}/repos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, name, description: desc, isPrivate }) });
+        }
+        async function apiListFiles(path) {
+            const { token, owner, repo } = S.creds;
+            return apiFetch(`${API}/files?token=${enc(token)}&owner=${enc(owner)}&repo=${enc(repo)}&path=${enc(path)}`);
+        }
+        async function apiStats() {
+            const { token, owner, repo } = S.creds;
+            return apiFetch(`${API}/stats?token=${enc(token)}&owner=${enc(owner)}&repo=${enc(repo)}`);
+        }
+        async function apiUpload(file, destPath) {
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('token', S.creds.token);
+            fd.append('owner', S.creds.owner);
+            fd.append('repo', S.creds.repo);
+            fd.append('path', destPath);
+            return apiFetch(`${API}/upload`, { method: 'POST', body: fd });
+        }
+        async function apiMkdir(path) {
+            return apiFetch(`${API}/folder`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...S.creds, path }) });
+        }
+        async function apiDelete(path, sha) {
+            return apiFetch(`${API}/files`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...S.creds, path, sha }) });
+        }
+        async function apiDeleteFolder(path) {
+            return apiFetch(`${API}/folder`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...S.creds, path }) });
+        }
+        async function apiDeleteRepo(owner, repo) {
+            return apiFetch(`${API}/repo`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: S.token, owner, repo }) });
+        }
+
+        // ════════════════════════════════════════════════
+        // ACTIONS
+        // ════════════════════════════════════════════════
+
+        // Step 1 — verify token
+        async function submitToken() {
+            if (!S.tokenInput.trim()) return;
+            set({ tokenLoading: true, tokenError: '' });
+            try {
+                const user = await apiVerifyToken(S.tokenInput.trim());
+                S.token = S.tokenInput.trim();
+                S.user = user;
+                persist();
+                set({ tokenLoading: false, screen: 'repos', reposLoading: true });
+                const data = await apiListRepos(S.token);
+                set({ repos: data.repos, reposLoading: false });
+            } catch (e) {
+                set({ tokenLoading: false, tokenError: e.message.includes('401') ? 'Invalid token. Make sure it has the repo scope.' : e.message });
+            }
+        }
+
+        // Load repos for already-authenticated user
+        async function fetchRepos() {
+            set({ reposLoading: true, repos: null });
+            try {
+                const data = await apiListRepos(S.token);
+                set({ repos: data.repos, reposLoading: false });
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ reposLoading: false });
+            }
+        }
+
+        // Step 2 — pick a repo
+        async function selectRepo(owner, repo) {
+            const creds = { token: S.token, owner, repo };
+            S.creds = creds;
+            persist();
+            set({ screen: 'app', path: 'files', items: [], stats: null });
+            await loadDir('files');
+        }
+
+        // Step 2 — create new repo
+        async function createRepo() {
+            const { name, desc, priv } = S.newRepo;
+            if (!name.trim()) return;
+            set({ creatingRepo: true });
+            try {
+                const r = await apiCreateRepo(S.token, name.trim(), desc.trim(), priv);
+                toast(`Repository "${r.name}" created!`);
+                set({ creatingRepo: false, showNewRepo: false, newRepo: { name: '', desc: '', priv: true } });
+                await selectRepo(r.owner, r.name);
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ creatingRepo: false });
+            }
+        }
+
+        // File manager
+        async function loadDir(path) {
+            set({ loading: true, items: [], path });
+            try {
+                const d = await apiListFiles(path);
+                set({ items: d.items || [], loading: false });
+                apiStats().then(s => set({ stats: s })).catch(() => { });
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ loading: false });
+            }
+        }
+
+        function navigate(p) { set({ search: '' }); loadDir(p); }
+
+        async function doUpload() {
+            const f = S.uploadFile;
+            if (!f || f.size > MAX_BYTES) return;
+            const dest = `${S.path}/${f.name}`;
+            set({ uploading: true });
+            try {
+                await apiUpload(f, dest);
+                toast(`"${f.name}" uploaded`);
+                set({ uploading: false, modal: null, uploadFile: null, uploadSub: '' });
+                loadDir(S.path);
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ uploading: false });
+            }
+        }
+
+        async function doMkdir() {
+            const name = S.folderName.trim();
+            if (!name) return;
+            try {
+                await apiMkdir(`${S.path}/${name}`);
+                toast(`Folder "${name}" created`);
+                set({ modal: null, folderName: '' });
+                loadDir(S.path);
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        async function doDelete() {
+            const t = S.deleteTarget;
+            if (!t) return;
+            try {
+                await apiDelete(t.path, t.sha);
+                toast(`"${t.name}" deleted`);
+                set({ modal: null, deleteTarget: null });
+                loadDir(S.path);
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        async function doDeleteFolder() {
+            const t = S.deleteTarget;
+            if (!t) return;
+            set({ deleting: true });
+            try {
+                const r = await apiDeleteFolder(t.path);
+                toast(`Folder "${t.name}" deleted (${r.deleted} files removed)`);
+                set({ modal: null, deleteTarget: null, deleting: false });
+                loadDir(S.path);
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ deleting: false });
+            }
+        }
+
+        async function doDeleteRepo() {
+            const { owner, repo } = S.creds;
+            set({ deleting: true });
+            try {
+                await apiDeleteRepo(owner, repo);
+                toast(`Repository "${repo}" deleted`);
+                wipe();
+                Object.assign(S, { token: S.token, user: S.user, creds: null, screen: 'repos', items: [], stats: null, modal: null, deleting: false });
+                persist();
+                render();
+                fetchRepos();
+            } catch (e) {
+                toast(e.message, 'error');
+                set({ deleting: false });
+            }
+        }
+
+        function signOut() { wipe(); Object.assign(S, { token: null, user: null, creds: null, screen: 'token', repos: null, items: [], stats: null, modal: null, tokenInput: '', tokenError: '' }); render(); }
+        function switchRepo() { S.creds = null; persist(); set({ screen: 'repos' }); fetchRepos(); }
+
+        // ════════════════════════════════════════════════
+        // UTILS
+        // ════════════════════════════════════════════════
+        function enc(s) { return encodeURIComponent(s); }
+        function esc(s = '') { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function humanSize(b) {
+            if (!b && b !== 0) return '—';
+            if (b < 1024) return b + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+            return (b / 1048576).toFixed(2) + ' MB';
+        }
+        function extIcon(name = '') {
+            const e = name.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(e)) return '🖼️';
+            if (e === 'pdf') return '📄';
+            if (['doc', 'docx'].includes(e)) return '📝';
+            if (['xls', 'xlsx', 'csv'].includes(e)) return '📊';
+            if (['ppt', 'pptx'].includes(e)) return '📋';
+            if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(e)) return '🎬';
+            if (['mp3', 'wav', 'flac', 'aac'].includes(e)) return '🎵';
+            if (['zip', 'tar', 'gz', 'rar', '7z'].includes(e)) return '🗜️';
+            if (['js', 'ts', 'jsx', 'tsx', 'py', 'java', 'c', 'cpp', 'go', 'rs', 'rb'].includes(e)) return '💻';
+            if (['txt', 'md'].includes(e)) return '📃';
+            return '📁';
+        }
+        function isImg(n = '') { return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(n.split('.').pop().toLowerCase()); }
+        function isPdf(n = '') { return n.split('.').pop().toLowerCase() === 'pdf'; }
+        function canPrev(n) { return isImg(n) || isPdf(n); }
+        function extBadge(n = '') { return n.split('.').pop().toUpperCase() || 'FILE'; }
+        function segs() { return S.path.split('/').filter(Boolean); }
+        function storeClass(p) { const v = parseFloat(p); return v < 60 ? 'ok' : v < 85 ? 'warn' : 'danger'; }
+        function timeAgo(iso) {
+            const d = Date.now() - new Date(iso).getTime();
+            const m = Math.floor(d / 60000), h = Math.floor(m / 60), dd = Math.floor(h / 24);
+            if (dd > 30) return new Date(iso).toLocaleDateString();
+            if (dd > 0) return dd + 'd ago';
+            if (h > 0) return h + 'h ago';
+            if (m > 0) return m + 'm ago';
+            return 'just now';
+        }
+
+        // ════════════════════════════════════════════════
+        // TOASTS
+        // ════════════════════════════════════════════════
+        let tid = 0;
+        function toast(msg, type = 'success') {
+            const id = ++tid;
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<span class="tdot"></span>${esc(msg)}`;
+            document.getElementById('toasts').appendChild(el);
+            setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 320); }, 3300);
+        }
+
+        // ════════════════════════════════════════════════
+        // RENDER
+        // ════════════════════════════════════════════════
+        function render() {
+            document.getElementById('app').innerHTML = buildApp();
+            removeModal();
+            if (S.modal) buildModal();
+            bindAll();
+        }
+
+        function buildApp() {
+            const nav = buildNav();
+            if (S.screen === 'token') return nav + buildTokenScreen();
+            if (S.screen === 'repos') return nav + buildReposScreen();
+            return nav + buildFileManager();
+        }
+
+        // ── NAV ───────────────────────────────────────────────────────────────────────
+        function buildNav() {
+            const right = S.screen === 'app' && S.creds
+                ? `<span class="nav-repo-tag">${esc(S.creds.owner)}/${esc(S.creds.repo)}</span>
+       ${S.user?.avatar ? `<img class="nav-avatar" src="${esc(S.user.avatar)}" alt="" />` : ''}
+       <span class="nav-user">${esc(S.user?.name || '')}</span>
+       <button class="nav-btn" id="btn-signout" title="Sign out">↩</button>`
+                : S.screen === 'repos'
+                    ? `${S.user?.avatar ? `<img class="nav-avatar" src="${esc(S.user.avatar)}" alt="" />` : ''}
+       <span class="nav-user">${esc(S.user?.name || '')}</span>
+       <button class="nav-btn" id="btn-signout" title="Sign out">↩</button>`
+                    : '';
+            return `<nav class="nav">
+    <div class="nav-brand">
+  <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 
+    6.53 5.47 7.59.4.07.55-.17.55-.38
+    0-.19-.01-.82-.01-1.49-2.01.37
+    -2.53-.49-2.69-.94-.09-.23-.48-.94
+    -.82-1.13-.28-.15-.68-.52-.01-.53
+    .63-.01 1.08.58 1.23.82.72 1.21
+    1.87.87 2.33.66.07-.52.28-.87
+    .51-1.07-1.78-.2-3.64-.89-3.64
+    -3.95 0-.87.31-1.59.82-2.15
+    -.08-.2-.36-1.02.08-2.12 0 0
+    .67-.21 2.2.82.64-.18 1.32-.27
+    2-.27s1.36.09 2 .27c1.53-1.04
+    2.2-.82 2.2-.82.44 1.1.16
+    1.92.08 2.12.51.56.82 1.27
+    .82 2.15 0 3.07-1.87 3.75
+    -3.65 3.95.29.25.54.73.54
+    1.48 0 1.07-.01 1.93-.01
+    2.2 0 .21.15.46.55.38A8.01
+    8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+  </svg>
+  GitVault
+</div>
+    <div class="nav-right">${right}</div>
+  </nav>`;
+        }
+
+        // ── STEP 1: Token ─────────────────────────────────────────────────────────────
+        function buildTokenScreen() {
+            const dis = S.tokenLoading || !S.tokenInput.trim();
+            return `<div class="connect-wrap">
+    <div class="token-card">
+      <div class="token-icon">🗄</div>
+      <div class="token-title">Sign in with GitHub</div>
+      <p class="token-sub">Enter your Personal Access Token. FileVault will fetch your repositories and let you pick where to store files.</p>
+      ${S.tokenError ? `<div class="token-error">⚠ ${esc(S.tokenError)}</div>` : ''}
+      <div class="field">
+        <div class="label">Personal Access Token</div>
+        <input class="input" id="tok-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="${esc(S.tokenInput)}" />
+        <div class="hint">
+  Needs <strong>repo</strong> and <strong>delete_repo</strong> scope. 
+  <a href="https://github.com/settings/tokens/new?scopes=repo,delete_repo&description=FileVault" 
+     target="_blank" rel="noreferrer">
+     Create one on GitHub →
+  </a>
+</div>
+      </div>
+      <button class="btn btn-primary btn-full" id="tok-submit" style="margin-top:4px" ${dis ? 'disabled' : ''}>
+        ${S.tokenLoading ? '<div class="spinner"></div> Verifying…' : 'Continue →'}
+      </button>
+      <p class="token-note">Your token is stored in <code>localStorage</code> and only sent to the GitHub REST API. Never shared elsewhere.</p>
+    </div>
+  </div>`;
+        }
+
+        // ── STEP 2: Repo Picker ───────────────────────────────────────────────────────
+        function buildReposScreen() {
+            const filteredRepos = (S.repos || []).filter(r =>
+                r.name.toLowerCase().includes(S.repoSearch.toLowerCase()) ||
+                r.description.toLowerCase().includes(S.repoSearch.toLowerCase())
+            );
+            const nr = S.newRepo;
+
+            return `<div class="connect-wrap" style="align-items:flex-start;padding-top:40px">
+    <div class="repo-page">
+      <div class="repo-page-head">
+        <div class="user-row">
+          ${S.user?.avatar ? `<img class="user-avatar" src="${esc(S.user.avatar)}" />` : ''}
+          <div>
+            <div class="user-name">${esc(S.user?.name || S.user?.login || '')}</div>
+            <div class="user-handle">@${esc(S.user?.login || '')}</div>
+          </div>
+        </div>
+        <div class="repo-page-title">Choose a Repository</div>
+        <div class="repo-page-sub">Select an existing repo to use as storage, or create a new one.</div>
+      </div>
+
+      <!-- Create new repo -->
+      ${!S.showNewRepo ? `
+      <div class="new-repo-toggle" id="toggle-new-repo">
+        <span class="new-repo-toggle-icon">✦</span>
+        <span class="new-repo-toggle-text">Create a new repository</span>
+      </div>` : `
+      <div class="new-repo-form">
+        <div class="new-repo-title">New Repository</div>
+        <div class="field">
+          <div class="label">Repository Name</div>
+          <input class="input" id="nr-name" placeholder="e.g. my-filevault" value="${esc(nr.name)}" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="field">
+          <div class="label">Description <span style="color:var(--g300);font-weight:400">(optional)</span></div>
+          <input class="input" id="nr-desc" placeholder="FileVault storage" value="${esc(nr.desc)}" />
+        </div>
+        <div class="field">
+          <div class="label">Visibility</div>
+          <div class="visibility-row">
+            <div class="vis-opt ${nr.priv ? 'selected' : ''}" id="vis-priv">
+              <span class="vis-opt-icon">🔒</span> Private
+            </div>
+            <div class="vis-opt ${!nr.priv ? 'selected' : ''}" id="vis-pub">
+              <span class="vis-opt-icon">🌐</span> Public
+            </div>
+          </div>
+          <div class="hint">Private repos are recommended for file storage.</div>
+        </div>
+        <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:4px">
+          <button class="btn btn-outline btn-sm" id="cancel-new-repo">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="create-repo-btn" ${!nr.name.trim() || S.creatingRepo ? 'disabled' : ''}>
+            ${S.creatingRepo ? '<div class="spinner"></div> Creating…' : '✦ Create Repository'}
+          </button>
+        </div>
+      </div>`}
+
+      <!-- Existing repos -->
+      <div class="repo-search-wrap">
+        <svg class="repo-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="repo-search" id="repo-search" placeholder="Search repositories…" value="${esc(S.repoSearch)}" />
+      </div>
+
+      <div class="repo-list">
+        <div class="repo-list-header">
+          <span class="repo-list-label">${S.repos ? `${filteredRepos.length} of ${S.repos.length} repositories` : 'Your repositories'}</span>
+        </div>
+        ${S.reposLoading ? `<div class="repo-loading"><div class="spinner spinner-dark"></div> Loading repositories…</div>` : ''}
+        ${!S.reposLoading && S.repos && filteredRepos.length === 0 ? `<div class="repo-empty">${S.repoSearch ? 'No repos match your search.' : 'No repositories found.'}</div>` : ''}
+        ${filteredRepos.map(r => {
+                const pct = parseFloat(r.percentUsed);
+                const cls = pct < 60 ? '' : pct < 85 ? 'warn' : 'danger';
+                return `<div class="repo-item" data-pick-owner="${esc(r.owner)}" data-pick-repo="${esc(r.name)}">
+            <div class="repo-item-icon">${r.private ? '🔒' : '📦'}</div>
+            <div class="repo-item-body">
+              <div class="repo-item-name">
+                ${esc(r.name)}
+                <span class="repo-priv-badge ${r.private ? 'priv' : 'pub'}">${r.private ? 'Private' : 'Public'}</span>
+              </div>
+              ${r.description ? `<div class="repo-item-desc">${esc(r.description)}</div>` : ''}
+              <div class="repo-item-meta">
+                <span class="repo-disk">${r.diskMB} MB
+                  <span class="repo-disk-bar"><span class="repo-disk-fill ${cls}" style="width:${pct}%"></span></span>
+                </span>
+                <span class="repo-disk">Updated ${timeAgo(r.updatedAt)}</span>
+              </div>
+            </div>
+            <span class="repo-item-arrow">›</span>
+          </div>`;
+            }).join('')}
+      </div>
+    </div>
+  </div>`;
+        }
+
+        // ── STEP 3: File Manager ──────────────────────────────────────────────────────
+        function buildFileManager() {
+            return `<div class="app-layout">
+    ${buildSidebar()}
+    <div class="main">
+      <div class="main-inner">
+        ${buildBc()}
+        ${buildDrop()}
+        ${buildToolbar()}
+        ${buildFtable()}
+      </div>
+    </div>
+  </div>`;
+        }
+
+        function buildSidebar() {
+            const st = S.stats;
+            const pct = st ? parseFloat(st.percentUsed) : 0;
+            const cls = storeClass(pct);
+            return `<aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Navigation</div>
+      <div class="sb-item ${S.path === 'files' ? 'active' : ''}" data-nav="files">
+        <span class="sb-icon">🗂</span> All Files
+      </div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-section">
+      <div class="sb-label">Quick Folders</div>
+      <div class="sb-item" data-nav="files/documents"><span class="sb-icon">📝</span> Documents</div>
+      <div class="sb-item" data-nav="files/images"><span class="sb-icon">🖼️</span> Images</div>
+      <div class="sb-item" data-nav="files/resumes"><span class="sb-icon">📄</span> Resumes</div>
+      <div class="sb-item" data-nav="files/archives"><span class="sb-icon">🗜️</span> Archives</div>
+    </div>
+    <div class="sb-spacer"></div>
+    ${st ? `<div class="storage-card">
+      <div class="storage-card-label">Storage Used</div>
+      <div class="storage-bar"><div class="storage-fill ${cls}" style="width:${Math.min(pct, 100)}%"></div></div>
+      <div class="storage-nums"><span>${st.diskMB} MB used</span><span>${st.safeLimitMB} MB limit</span></div>
+    </div>` : ''}
+    <button class="btn btn-outline btn-sm switch-repo-btn" id="btn-switch-repo">⇄ Switch Repository</button>
+    <button class="btn btn-sm switch-repo-btn" id="btn-delete-repo" style="color:var(--red);border:1px solid #ffd0d0;background:var(--rl);margin-top:6px">🗑 Delete Repository</button>
+  </aside>`;
+        }
+
+        function buildBc() {
+            const s = segs();
+            return `<div class="bc">${s.map((seg, i) => {
+                const p = s.slice(0, i + 1).join('/');
+                const last = i === s.length - 1;
+                return `${i > 0 ? '<span class="bc-sep">/</span>' : ''}${last
+                    ? `<span class="bc-cur">${esc(seg)}</span>`
+                    : `<span class="bc-item" data-nav="${esc(p)}">${esc(seg)}</span>`}`;
+            }).join('')}</div>`;
+        }
+
+        function buildDrop() {
+            return `<div class="drop" id="drop-zone">
+    <input type="file" id="file-input" class="drop-input" />
+    <div class="drop-icon">⬆</div>
+    <div class="drop-title">Drop files to upload</div>
+    <div class="drop-sub">or <em>click to browse</em> — max ${MAX_MB} MB per file</div>
+  </div>`;
+        }
+
+        function buildToolbar() {
+            return `<div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg class="search-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-inp" id="search-inp" placeholder="Search files…" value="${esc(S.search)}" />
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline btn-sm" id="btn-refresh">↻</button>
+      <button class="btn btn-outline btn-sm" id="btn-mkdir">＋ Folder</button>
+      <button class="btn btn-primary btn-sm" id="btn-upload">⬆ Upload</button>
+    </div>
+  </div>`;
+        }
+
+        function buildFtable() {
+            const s = segs();
+            const filtered = S.items.filter(i => i.name.toLowerCase().includes(S.search.toLowerCase()));
+            const sorted = [...filtered].sort((a, b) => {
+                if (a.type === 'dir' && b.type !== 'dir') return -1;
+                if (a.type !== 'dir' && b.type === 'dir') return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            return `<div class="ftable">
+    <div class="fth">
+      <div></div>
+      <div class="th">Name</div>
+      <div class="th">Type</div>
+      <div class="th">Size</div>
+      <div class="th" style="text-align:right">Actions</div>
+    </div>
+
+    ${S.loading ? `<div class="state-row"><div class="spinner spinner-dark"></div><span>Loading…</span></div>` : ''}
+
+    ${!S.loading && s.length > 1 && !S.search ? `
+    <div class="frow" style="cursor:pointer" data-nav="${esc(s.slice(0, -1).join('/'))}">
+      <div class="row-ic">⬆️</div>
+      <div class="row-name"><div class="row-nm dir">.. (parent folder)</div></div>
+      <div><span class="row-badge">Folder</span></div>
+      <div class="row-size">—</div><div></div>
+    </div>` : ''}
+
+    ${!S.loading && sorted.length === 0 ? `
+    <div class="empty-st">
+      <div class="empty-ic">${S.search ? '🔍' : '📂'}</div>
+      <div class="empty-tt">${S.search ? 'No results' : 'This folder is empty'}</div>
+      <div class="empty-ds">${S.search ? 'Try a different term.' : 'Upload a file or create a folder to get started.'}</div>
+    </div>` : ''}
+
+    ${sorted.map(it => `
+    <div class="frow"
+      data-item-path="${esc(it.path)}" data-item-type="${it.type}"
+      data-item-name="${esc(it.name)}" data-item-sha="${esc(it.sha || '')}"
+      data-item-size="${it.size || 0}" data-item-url="${esc(it.downloadUrl || '')}">
+      <div class="row-ic">${it.type === 'dir' ? '📁' : extIcon(it.name)}</div>
+      <div class="row-name">
+        <div class="row-nm ${it.type === 'dir' ? 'dir' : ''}">${esc(it.name)}</div>
+        <div class="row-pt">${esc(it.path)}</div>
+      </div>
+      <div><span class="row-badge">${it.type === 'dir' ? 'Folder' : extBadge(it.name)}</span></div>
+      <div class="row-size">${it.type === 'dir' ? '—' : humanSize(it.size)}</div>
+      <div class="faction" onclick="event.stopPropagation()">
+        ${it.type === 'file' ? `
+          ${canPrev(it.name) ? `<button class="btn btn-blue btn-sm" data-action="preview" data-item-path="${esc(it.path)}" data-item-name="${esc(it.name)}" data-item-url="${esc(it.downloadUrl || '')}" data-item-size="${it.size || 0}">Preview</button>` : ''}
+          <button class="btn btn-ghost btn-sm" data-action="download" data-item-url="${esc(it.downloadUrl || '')}" data-item-name="${esc(it.name)}">↓</button>
+          <button class="btn btn-danger btn-sm" data-action="delete-file" data-item-path="${esc(it.path)}" data-item-name="${esc(it.name)}" data-item-sha="${esc(it.sha || '')}">✕</button>
+        ` : `
+          <button class="btn btn-danger btn-sm" data-action="delete-folder" data-item-path="${esc(it.path)}" data-item-name="${esc(it.name)}">🗑 Delete</button>
+        `}
+      </div>
+    </div>`).join('')}
+  </div>`;
+        }
+
+        // ════════════════════════════════════════════════
+        // MODALS
+        // ════════════════════════════════════════════════
+        function removeModal() { document.getElementById('modal-root')?.remove(); }
+
+        function buildModal() {
+            const root = document.createElement('div');
+            root.id = 'modal-root';
+            if (S.modal === 'upload') root.innerHTML = buildUploadModal();
+            else if (S.modal === 'folder') root.innerHTML = buildFolderModal();
+            else if (S.modal === 'delete') root.innerHTML = buildDeleteModal();
+            else if (S.modal === 'delete-repo') root.innerHTML = buildDeleteRepoModal();
+            else if (S.modal === 'preview') root.innerHTML = buildPreviewModal();
+            document.body.appendChild(root);
+            bindModal();
+        }
+
+        function buildUploadModal() {
+            const f = S.uploadFile;
+            const over = f && f.size > MAX_BYTES;
+            const dest = f ? `${S.path}/${f.name}` : '';
+            return `<div class="overlay" id="m-overlay">
+    <div class="modal">
+      <div class="mhead">
+        <div class="mtitle">Upload File</div>
+        <div class="msub">Uploading to <code style="font-size:12px;background:var(--g50);padding:2px 6px;border-radius:4px;font-family:var(--mono)">${esc(S.path)}/</code></div>
+      </div>
+      <div class="mbody">
+        ${f ? `<div class="fpreview-card">
+          <div class="fpreview-ic">${extIcon(f.name)}</div>
+          <div><div class="fpreview-nm">${esc(f.name)}</div><div class="fpreview-sz">${humanSize(f.size)} of ${MAX_MB} MB max</div></div>
+        </div>
+        ${over
+                        ? `<div class="size-bad">⛔ ${(f.size / 1048576).toFixed(1)} MB — exceeds the ${MAX_MB} MB limit</div>`
+                        : `<div class="size-ok">✓ File size is within the allowed limit</div>`}
+        <div class="hint-path" style="margin-top:10px">→ ${esc(dest)}</div>
+        ` : '<div style="color:var(--g300);font-size:14px">No file selected.</div>'}
+        ${S.uploading ? `<div class="progress-wrap" style="margin-top:14px"><div class="prog-bar"><div class="prog-fill"></div></div></div>` : ''}
+      </div>
+      <div class="mfoot">
+        <button class="btn btn-outline" id="m-cancel" ${S.uploading ? 'disabled' : ''}>Cancel</button>
+        <button class="btn btn-primary" id="m-confirm" ${(!f || over || S.uploading) ? 'disabled' : ''}>
+          ${S.uploading ? '<div class="spinner"></div> Uploading…' : 'Upload →'}
+        </button>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        function buildFolderModal() {
+            return `<div class="overlay" id="m-overlay">
+    <div class="modal">
+      <div class="mhead"><div class="mtitle">New Folder</div><div class="msub">Create a folder inside <strong>${esc(S.path)}</strong></div></div>
+      <div class="mbody">
+        <div class="field">
+          <div class="label">Folder Name</div>
+          <input class="input" id="folder-inp" placeholder="e.g. photos, documents" value="${esc(S.folderName)}" autocomplete="off" />
+          <div class="hint-path" id="folder-hint">${S.folderName.trim() ? `→ ${esc(S.path)}/${esc(S.folderName.trim())}/` : ''}</div>
+        </div>
+      </div>
+      <div class="mfoot">
+        <button class="btn btn-outline" id="m-cancel">Cancel</button>
+        <button class="btn btn-primary" id="m-confirm" ${!S.folderName.trim() ? 'disabled' : ''}>Create Folder</button>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        function buildDeleteModal() {
+            const t = S.deleteTarget;
+            const isFolder = S.deletingType === 'folder';
+            return `<div class="overlay" id="m-overlay">
+    <div class="modal">
+      <div class="mhead">
+        <div class="del-icon">${isFolder ? '📁' : '🗑'}</div>
+        <div class="mtitle">Delete ${isFolder ? 'Folder' : 'File'}</div>
+        <div class="msub">
+          ${isFolder
+                    ? `Permanently delete the folder <strong>${esc(t?.name)}</strong> and <strong>all files inside it</strong>? This cannot be undone.`
+                    : `Permanently delete <strong>${esc(t?.name)}</strong>? This cannot be undone.`}
+        </div>
+      </div>
+      <div class="mbody">
+        ${isFolder ? `<div class="size-bad" style="margin-top:0">⚠️ All files inside this folder will be deleted from the repository.</div>` : ''}
+        ${S.deleting ? `<div class="progress-wrap" style="margin-top:14px"><div class="prog-bar"><div class="prog-fill"></div></div><div style="font-size:12px;color:var(--g500);margin-top:6px">Deleting files…</div></div>` : ''}
+      </div>
+      <div class="mfoot">
+        <button class="btn btn-outline" id="m-cancel" ${S.deleting ? 'disabled' : ''}>Cancel</button>
+        <button class="btn btn-primary" id="m-confirm" style="background:var(--red)" ${S.deleting ? 'disabled' : ''}>
+          ${S.deleting ? '<div class="spinner"></div> Deleting…' : `Delete ${isFolder ? 'Folder' : 'File'}`}
+        </button>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        function buildDeleteRepoModal() {
+            const repo = S.creds?.repo;
+            const owner = S.creds?.owner;
+            return `<div class="overlay" id="m-overlay">
+    <div class="modal">
+      <div class="mhead">
+        <div class="del-icon" style="background:#ffe8e8;font-size:22px">⚠️</div>
+        <div class="mtitle">Delete Repository</div>
+        <div class="msub">You are about to permanently delete <strong>${esc(owner)}/${esc(repo)}</strong> and <strong>everything in it</strong>. This is irreversible.</div>
+      </div>
+      <div class="mbody">
+        <div class="size-bad" style="margin-top:0;margin-bottom:14px">⚠️ This will delete the entire GitHub repository, all files, and all history.</div>
+        <div class="field">
+          <div class="label">Type <strong>${esc(repo)}</strong> to confirm</div>
+          <input class="input" id="confirm-repo-inp" placeholder="${esc(repo)}" autocomplete="off" />
+        </div>
+        ${S.deleting ? `<div class="progress-wrap"><div class="prog-bar"><div class="prog-fill"></div></div></div>` : ''}
+      </div>
+      <div class="mfoot">
+        <button class="btn btn-outline" id="m-cancel" ${S.deleting ? 'disabled' : ''}>Cancel</button>
+        <button class="btn btn-primary" id="m-confirm-repo" style="background:var(--red)" disabled>
+          ${S.deleting ? '<div class="spinner"></div> Deleting…' : 'Delete Repository'}
+        </button>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        function buildPreviewModal() {
+            const t = S.previewTarget;
+            const img = isImg(t?.name), pdf = isPdf(t?.name);
+            return `<div class="overlay" id="m-overlay">
+    <div class="modal modal-lg">
+      <div class="prev-bar">
+        <div><div class="prev-fn">${esc(t?.name)}</div><div class="prev-fm">${humanSize(t?.size)} · ${extBadge(t?.name)}</div></div>
+        <div class="prev-acts">
+          <a href="${esc(t?.url)}" target="_blank" download="${esc(t?.name)}" class="btn btn-outline btn-sm">↓ Download</a>
+          <button class="btn btn-ghost btn-sm" id="m-cancel">✕</button>
+        </div>
+      </div>
+      <div class="prev-body">
+        ${img ? `<img class="prev-img" src="${esc(t?.url)}" alt="${esc(t?.name)}" />` : ''}
+        ${pdf ? `<iframe class="prev-iframe" src="${esc(t?.url)}"></iframe>` : ''}
+        ${!img && !pdf ? `<div class="prev-none"><div class="prev-none-ic">📁</div>No preview available for this file type.</div>` : ''}
+      </div>
+    </div>
+  </div>`;
+        }
+
+        // ════════════════════════════════════════════════
+        // EVENT BINDING
+        // ════════════════════════════════════════════════
+        function bindAll() {
+            // Nav
+            document.getElementById('btn-signout')?.addEventListener('click', signOut);
+
+            // Token screen
+            const tokIn = document.getElementById('tok-input');
+            if (tokIn) {
+                tokIn.addEventListener('input', e => { S.tokenInput = e.target.value; const btn = document.getElementById('tok-submit'); if (btn) btn.disabled = S.tokenLoading || !S.tokenInput.trim(); });
+                tokIn.addEventListener('keydown', e => { if (e.key === 'Enter') submitToken(); });
+            }
+            document.getElementById('tok-submit')?.addEventListener('click', submitToken);
+
+            // Repo screen
+            document.getElementById('repo-search')?.addEventListener('input', e => set({ repoSearch: e.target.value }));
+            document.getElementById('toggle-new-repo')?.addEventListener('click', () => set({ showNewRepo: true }));
+            document.getElementById('cancel-new-repo')?.addEventListener('click', () => set({ showNewRepo: false }));
+            document.getElementById('vis-priv')?.addEventListener('click', () => { S.newRepo.priv = true; set({}); });
+            document.getElementById('vis-pub')?.addEventListener('click', () => { S.newRepo.priv = false; set({}); });
+            document.getElementById('nr-name')?.addEventListener('input', e => { S.newRepo.name = e.target.value; const btn = document.getElementById('create-repo-btn'); if (btn) btn.disabled = !S.newRepo.name.trim() || S.creatingRepo; });
+            document.getElementById('nr-desc')?.addEventListener('input', e => { S.newRepo.desc = e.target.value; });
+            document.getElementById('create-repo-btn')?.addEventListener('click', createRepo);
+            document.querySelectorAll('[data-pick-owner]').forEach(el => {
+                el.addEventListener('click', () => selectRepo(el.dataset.pickOwner, el.dataset.pickRepo));
+            });
+
+            // File manager nav
+            document.querySelectorAll('[data-nav]').forEach(el => el.addEventListener('click', e => { e.stopPropagation(); navigate(el.dataset.nav); }));
+            document.getElementById('btn-switch-repo')?.addEventListener('click', switchRepo);
+            document.getElementById('btn-delete-repo')?.addEventListener('click', () => set({ modal: 'delete-repo', deleting: false }));
+
+            // Drop zone
+            const dz = document.getElementById('drop-zone');
+            const fi = document.getElementById('file-input');
+            if (dz) {
+                dz.addEventListener('click', () => fi?.click());
+                dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+                dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+                dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); const f = e.dataTransfer.files[0]; if (f) set({ modal: 'upload', uploadFile: f, uploadSub: '', uploading: false }); });
+            }
+            fi?.addEventListener('change', e => { const f = e.target.files[0]; if (f) set({ modal: 'upload', uploadFile: f, uploadSub: '', uploading: false }); });
+
+            // Toolbar
+            document.getElementById('search-inp')?.addEventListener('input', e => set({ search: e.target.value }));
+            document.getElementById('btn-refresh')?.addEventListener('click', () => loadDir(S.path));
+            document.getElementById('btn-mkdir')?.addEventListener('click', () => set({ modal: 'folder', folderName: '' }));
+            document.getElementById('btn-upload')?.addEventListener('click', () => set({ modal: 'upload', uploadFile: null, uploadSub: '', uploading: false }));
+
+            // File rows
+            document.querySelectorAll('.frow[data-item-type]').forEach(row => {
+                row.addEventListener('click', () => {
+                    const { itemType, itemPath, itemName, itemUrl, itemSize } = row.dataset;
+                    if (itemType === 'dir') { navigate(itemPath); return; }
+                    if (canPrev(itemName)) set({ modal: 'preview', previewTarget: { name: itemName, url: itemUrl, size: parseInt(itemSize) || 0 } });
+                });
+            });
+
+            // Action buttons
+            document.querySelectorAll('[data-action]').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const { action, itemName, itemUrl, itemPath, itemSha, itemSize } = btn.dataset;
+                    if (action === 'preview') set({ modal: 'preview', previewTarget: { name: itemName, url: itemUrl, size: parseInt(itemSize) || 0 } });
+                    else if (action === 'download') { const a = document.createElement('a'); a.href = itemUrl; a.download = itemName; a.target = '_blank'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+                    else if (action === 'delete-file') set({ modal: 'delete', deletingType: 'file', deleteTarget: { path: itemPath, name: itemName, sha: itemSha } });
+                    else if (action === 'delete-folder') set({ modal: 'delete', deletingType: 'folder', deleteTarget: { path: itemPath, name: itemName } });
+                });
+            });
+        }
+
+        function bindModal() {
+            const overlay = document.getElementById('m-overlay');
+            const cancel = document.getElementById('m-cancel');
+            const confirm = document.getElementById('m-confirm');
+
+            overlay?.addEventListener('click', e => { if (e.target === overlay && !S.uploading) set({ modal: null }); });
+            cancel?.addEventListener('click', () => { if (!S.uploading) set({ modal: null }); });
+
+            if (confirm) {
+                if (S.modal === 'upload') confirm.addEventListener('click', doUpload);
+                else if (S.modal === 'folder') confirm.addEventListener('click', doMkdir);
+                else if (S.modal === 'delete') {
+                    if (S.deletingType === 'folder') confirm.addEventListener('click', doDeleteFolder);
+                    else confirm.addEventListener('click', doDelete);
+                }
+            }
+
+            // delete repo — confirm button only enables when repo name is typed correctly
+            const confirmRepoBtn = document.getElementById('m-confirm-repo');
+            const confirmRepoInp = document.getElementById('confirm-repo-inp');
+            if (confirmRepoInp && confirmRepoBtn) {
+                confirmRepoInp.focus();
+                confirmRepoInp.addEventListener('input', e => {
+                    confirmRepoBtn.disabled = e.target.value.trim() !== S.creds?.repo;
+                });
+                confirmRepoBtn.addEventListener('click', doDeleteRepo);
+            }
+
+            // folder input — update state only, never re-render the modal (causes focus loss / flicker)
+            const folderInp = document.getElementById('folder-inp');
+            if (folderInp) {
+                folderInp.focus();
+                folderInp.addEventListener('input', e => {
+                    S.folderName = e.target.value;
+                    // just toggle the confirm button disabled state without rebuilding
+                    const btn = document.getElementById('m-confirm');
+                    if (btn) btn.disabled = !S.folderName.trim();
+                    const hint = document.getElementById('folder-hint');
+                    if (hint) hint.textContent = S.folderName.trim() ? `→ ${S.path}/${S.folderName.trim()}/` : '';
+                });
+                folderInp.addEventListener('keydown', e => { if (e.key === 'Enter' && S.folderName.trim()) doMkdir(); });
+            }
+        }
+
+        loadSaved();
+        render();
+        if (S.screen === 'repos' && S.token) fetchRepos();
+        if (S.screen === 'app' && S.creds) loadDir('files');
+    </script>
+</body>
+
+</html>
