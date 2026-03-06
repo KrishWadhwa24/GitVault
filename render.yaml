@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: gitvault-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: FRONTEND_URLS
+        value: http://localhost:3000,https://git-vault-seven.vercel.app
