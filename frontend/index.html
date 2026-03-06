@@ -1545,16 +1545,14 @@
     <div class="toasts" id="toasts"></div>
 
     <script>
-        // ════════════════════════════════════════════════
-        // CONFIG
-        // ════════════════════════════════════════════════
-        const API = 'http://localhost:3001/api';
+
+        const IS_DEV = window.location.hostname === 'localhost';
+        const API = IS_DEV
+            ? 'http://localhost:3001/api'
+            : 'https://gitvault.onrender.com/api';
         const MAX_MB = 95;
         const MAX_BYTES = MAX_MB * 1024 * 1024;
 
-        // ════════════════════════════════════════════════
-        // STATE
-        // ════════════════════════════════════════════════
         const S = {
             // auth
             token: null,
